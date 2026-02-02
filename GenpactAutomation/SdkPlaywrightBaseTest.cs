@@ -18,7 +18,7 @@ public abstract class SdkPlaywrightBaseTest
     protected IPage Page = null!;
     protected PageNavigator PageNavigator = null!;
 
-    protected virtual string AppsettingsJsonFilePath => "appsettings.development.json";
+    protected virtual string AppsettingsJsonFilePath => "appsettings.default.json";
     private const bool JSON_FILE_IS_OPTIONAL = false;
 
     protected virtual async Task BeforeTestAsync()

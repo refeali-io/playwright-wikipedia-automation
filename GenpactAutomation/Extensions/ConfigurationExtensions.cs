@@ -17,13 +17,17 @@ public static class ConfigurationExtensions
     public static IServiceCollection ConfigurePlaywright(this IServiceCollection services, IConfiguration config)
     {
         var playwrightBrowserConfig = config.GetSection(nameof(PlaywrightBrowserConfig)).Get<PlaywrightBrowserConfig>();
-        var playwrightBrowserContextConfig = config.GetSection(nameof(PlaywrightBrowserContextConfig)).Get<PlaywrightBrowserContextConfig>();
+        var playwrightBrowserContextConfig = config.GetSection(nameof(PlaywrightBrowserContextConfig))
+            .Get<PlaywrightBrowserContextConfig>();
 
         services.AddSingleton(_ => Playwright.CreateAsync().GetAwaiter().GetResult());
         services.AddSingleton(provider => provider.GetRequiredService<IPlaywright>()
             [playwrightBrowserConfig!.BrowserType].LaunchAsync(playwrightBrowserConfig).GetAwaiter().GetResult());
-        services.AddSingleton(provider => provider.GetRequiredService<IBrowser>().NewContextAsync(playwrightBrowserContextConfig!).GetAwaiter().GetResult());
-        services.AddSingleton(provider => provider.GetRequiredService<IBrowserContext>().NewPageAsync().GetAwaiter().GetResult());
+        services.AddSingleton(provider =>
+            provider.GetRequiredService<IBrowser>().NewContextAsync(playwrightBrowserContextConfig!).GetAwaiter()
+                .GetResult());
+        services.AddSingleton(provider =>
+            provider.GetRequiredService<IBrowserContext>().NewPageAsync().GetAwaiter().GetResult());
 
         return services;
     }
@@ -49,10 +53,12 @@ public static class ConfigurationExtensions
     }
 
     public static IConfigurationBuilder AddDefaultAppsettings(this IConfigurationBuilder builder,
-        bool isBaseAppsettingsOptional = IS_BASE_APPSETTINGS_OPTIONAL, bool reloadBaseAppsettingsOnChange = RELOAD_BASE_APPSETTINGS_OM_CHANE)
+        bool isBaseAppsettingsOptional = IS_BASE_APPSETTINGS_OPTIONAL,
+        bool reloadBaseAppsettingsOnChange = RELOAD_BASE_APPSETTINGS_OM_CHANE)
     {
         var sdkFileProvider = new EmbeddedFileProvider(typeof(Startup).Assembly);
-        builder.AddJsonFile(sdkFileProvider, BASE_APPSETTINGS_FILE_PATH, isBaseAppsettingsOptional, reloadBaseAppsettingsOnChange);
+        builder.AddJsonFile(sdkFileProvider, BASE_APPSETTINGS_FILE_PATH, isBaseAppsettingsOptional,
+            reloadBaseAppsettingsOnChange);
 
         return builder;
     }

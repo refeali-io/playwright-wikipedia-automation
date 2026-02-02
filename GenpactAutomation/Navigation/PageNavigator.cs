@@ -36,9 +36,9 @@ public class PageNavigator
     private string ExtractPageRoute<T>()
     {
         return _pageNavigatorConfig.GetType().GetProperties()
-            .First(property => property.Name.Contains(typeof(T).Name, StringComparison.OrdinalIgnoreCase))
-            .GetValue(_pageNavigatorConfig) as string
-            ?? throw new InvalidOperationException($"No route found for page type {typeof(T).Name}");
+                   .First(property => property.Name.Contains(typeof(T).Name, StringComparison.OrdinalIgnoreCase))
+                   .GetValue(_pageNavigatorConfig) as string
+               ?? throw new InvalidOperationException($"No route found for page type {typeof(T).Name}");
     }
 
     private async Task NavigateToPageAsync(string route)
@@ -49,6 +49,6 @@ public class PageNavigator
     private T ExtractPage<T>() where T : Page
     {
         return _pages.First(page => page.GetType() == typeof(T)) as T
-            ?? throw new InvalidOperationException($"Page type {typeof(T).Name} not registered");
+               ?? throw new InvalidOperationException($"Page type {typeof(T).Name} not registered");
     }
 }
