@@ -6,4 +6,5 @@ namespace GenpactAutomation.Config;
 public class PlaywrightBrowserConfig : BrowserTypeLaunchOptions
 {
     public string BrowserType { get; set; } = Chromium;
+
 }
