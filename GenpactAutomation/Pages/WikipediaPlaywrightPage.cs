@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using GenpactAutomation.Utils;
 using Microsoft.Playwright;
 
@@ -34,37 +33,82 @@ public class WikipediaPlaywrightPage : Page
     }
 
     /// <summary>
-    /// Task 2: Gets all "technology names" in the "Microsoft development tools" subsection (under Debugging features).
-    /// Returns (text, isLink) for each; test should assert all are links.
+    /// Task 2: Gets all technology names from the "Microsoft development tools" table.
+    /// Returns (Text, IsLink) for each technology name found in td cells.
     /// </summary>
-    public async Task<IReadOnlyList<(string Text, bool IsLink)>> GetMicrosoftDevelopmentToolsTechnologyEntriesAsync()
+    public async Task<IReadOnlyList<TechnologyEntry>> GetMicrosoftDevelopmentToolsTechnologyEntriesAsync()
     {
-        var raw = await PlaywrightPage.EvaluateAsync<List<TechnologyEntryDto>>(@"() => {
-            const sectionEl = document.getElementById('Microsoft_development_tools');
-            if (!sectionEl) return [];
-            const container = sectionEl.closest('h3')?.nextElementSibling || sectionEl.closest('h2')?.nextElementSibling;
-            if (!container) return [];
-            const listItems = container.querySelectorAll('li');
-            const result = [];
-            for (const li of listItems) {
-                const link = li.querySelector('a');
-                const text = (link || li).innerText.trim();
-                if (!text) continue;
-                result.push({ text: text, isLink: !!link });
+        // Find the table containing "Microsoft_development_tools"
+        var table = PlaywrightPage.Locator("table:has([id^='Microsoft_development_tools'])");
+        if (await table.CountAsync() == 0)
+            return Array.Empty<TechnologyEntry>();
+        
+        // Get all links inside td cells (technology names are in td, categories are in th)
+        var allLinks = table.Locator("td a");
+        var linkCount = await allLinks.CountAsync();
+        var entries = new List<TechnologyEntry>();
+        
+        // Skip list: nav links, category, etc.
+        var skipTexts = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "v", "t", "e", "Category", "show", "hide"
+        };
+        
+        for (int i = 0; i < linkCount; i++)
+        {
+            var link = allLinks.Nth(i);
+            var text = (await link.TextContentAsync() ?? "").Trim();
+            
+            // Skip empty, separators, nav links, or non-tech entries
+            if (string.IsNullOrWhiteSpace(text) || text == "·" || text.Length <= 1)
+                continue;
+            
+            if (skipTexts.Contains(text))
+                continue;
+            
+            entries.Add(new TechnologyEntry(text, IsLink: true));
+        }
+        
+        // Check for any text in td cells that is NOT a link
+        var tdCells = table.Locator("td");
+        var cellCount = await tdCells.CountAsync();
+        var linkTexts = entries.Select(e => e.Text).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        
+        for (int i = 0; i < cellCount; i++)
+        {
+            var td = tdCells.Nth(i);
+            var fullText = await td.InnerTextAsync();
+            
+            var parts = fullText.Split(new[] { '·', '•', '\n', '\r' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach (var part in parts)
+            {
+                var cleanPart = part.Trim();
+                
+                if (string.IsNullOrWhiteSpace(cleanPart) || cleanPart.Length <= 1)
+                    continue;
+                
+                bool foundAsLink = linkTexts.Any(lt => 
+                    lt.Equals(cleanPart, StringComparison.OrdinalIgnoreCase) ||
+                    lt.Contains(cleanPart, StringComparison.OrdinalIgnoreCase) ||
+                    cleanPart.Contains(lt, StringComparison.OrdinalIgnoreCase));
+                
+                if (!foundAsLink)
+                    entries.Add(new TechnologyEntry(cleanPart, IsLink: false));
             }
-            return result;
-        }");
-        if (raw == null) return Array.Empty<(string, bool)>();
-        return raw.ConvertAll(e => (e.Text, e.IsLink));
+        }
+        
+        // Remove duplicates
+        return entries
+            .GroupBy(e => e.Text, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First())
+            .ToList();
     }
 
-    private class TechnologyEntryDto
-    {
-        [JsonPropertyName("text")]
-        public string Text { get; set; } = string.Empty;
-        [JsonPropertyName("isLink")]
-        public bool IsLink { get; set; }
-    }
+    /// <summary>
+    /// Represents a technology entry with its name and whether it's a link.
+    /// </summary>
+    public record TechnologyEntry(string Text, bool IsLink);
 
     /// <summary>
     /// Task 3: Opens the Color (beta) / Appearance section in the sidebar and selects "Dark".
