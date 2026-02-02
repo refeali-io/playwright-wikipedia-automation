@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using GenpactAutomation.Utils;
 using Microsoft.Playwright;
 
 namespace GenpactAutomation.Pages;
@@ -10,24 +11,26 @@ public class WikipediaPlaywrightPage : Page
     }
 
     /// <summary>
-    /// Gets the "Debugging features" section body text (from the h2 until the next h2).
-    /// Wikipedia uses id="Debugging_features" on the section heading span.
+    /// Gets the "Debugging features" section body text.
+    /// Navigates: #Debugging_features -> parent div.mw-heading -> following <p> and <ul>
     /// </summary>
     public async Task<string> GetDebuggingFeaturesSectionTextAsync()
     {
-        return await PlaywrightPage.EvaluateAsync<string>(@"() => {
-            const el = document.getElementById('Debugging_features');
-            if (!el) return '';
-            const h2 = el.closest('h2');
-            if (!h2) return '';
-            let s = '';
-            let next = h2.nextElementSibling;
-            while (next && next.tagName !== 'H2') {
-                s += next.innerText + ' ';
-                next = next.nextElementSibling;
-            }
-            return s.trim();
-        }");
+        // Find the h3 heading, go up to parent div.mw-heading
+        var headingDiv = PlaywrightPage.Locator("#Debugging_features").Locator("..");
+        
+        // Get the <p> that follows the heading div
+        var paragraph = headingDiv.Locator("xpath=following-sibling::p[1]");
+        var paragraphText = await paragraph.InnerTextAsync();
+        
+        // Get the <ul> that follows the heading div
+        var list = headingDiv.Locator("xpath=following-sibling::ul[1]");
+        var listText = await list.InnerTextAsync();
+        
+        var rawText = $"{paragraphText} {listText}";
+        
+        // Clean: remove any stray [edit], citations, etc.
+        return TextNormalizer.CleanWikipediaSectionText(rawText);
     }
 
     /// <summary>

@@ -24,6 +24,9 @@ public static class TestCompositionRoot
                 var fullApiUrl = apiConfig.GetFullApiUrl();
                 if (!string.IsNullOrEmpty(fullApiUrl))
                     client.BaseAddress = new Uri(fullApiUrl);
+                
+                // Wikipedia API requires a User-Agent header
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("GenpactAutomation/1.0 (Automation Test Suite)");
             });
         return services.BuildServiceProvider();
     }

@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using GenpactAutomation.Utils;
 
 namespace GenpactAutomation.Api;
 
@@ -20,7 +21,10 @@ public class MediaWikiApiClient : IMediaWikiApiClient
     {
         var sectionIndex = await GetSectionIndexAsync(cancellationToken).ConfigureAwait(false);
         var html = await GetSectionHtmlAsync(sectionIndex, cancellationToken).ConfigureAwait(false);
-        return StripHtml(html);
+        var rawText = StripHtml(html);
+        
+        // Clean: remove heading, [edit], and truncate at citations [1]
+        return TextNormalizer.CleanWikipediaSectionText(rawText, SectionHeading);
     }
 
     private async Task<int> GetSectionIndexAsync(CancellationToken cancellationToken)
