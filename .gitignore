@@ -58,3 +58,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Allure (default: GenpactAutomation/bin/Debug/net7.0/allure-results)
+allure-report/

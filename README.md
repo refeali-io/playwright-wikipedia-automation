@@ -110,7 +110,7 @@ GenpactAutomation/
 
 ### Running Tests
 
-Run all tests:
+Run all tests (Allure.NUnit writes results to `GenpactAutomation/bin/Debug/net7.0/allure-results/` by default):
 ```bash
 dotnet test
 ```
@@ -125,10 +125,28 @@ Run a specific test:
 dotnet test --filter "Task1_DebuggingFeaturesSection_UniqueWordCount_UI_Equals_API"
 ```
 
-Generate HTML report:
-```bash
-dotnet test --logger "html;LogFileName=TestReport.html"
-```
+### Viewing the Allure report locally
+
+1. **Prerequisites:** [Node.js](https://nodejs.org/) and Java 8+ (for Allure CLI).
+
+2. **Install Allure commandline** (one time):
+   ```bash
+   npm install -g allure-commandline
+   ```
+
+3. **Run tests**, then generate and open the report:
+   ```bash
+   dotnet test
+   allure serve GenpactAutomation/bin/Debug/net7.0/allure-results
+   ```
+   This generates the HTML report and opens it in your default browser.
+
+   **Alternative:** generate to a folder and open `allure-report/index.html` in a browser:
+   ```bash
+   dotnet test
+   allure generate GenpactAutomation/bin/Debug/net7.0/allure-results -o allure-report --clean
+   # Then open allure-report/index.html
+   ```
 
 ## Configuration
 
@@ -146,20 +164,16 @@ The framework uses `appsettings.default.json` for configuration:
 }
 ```
 
-## CI/CD
+## CI/CD and Allure report
 
-The project includes GitHub Actions workflow that:
-- Builds the solution
-- Installs Playwright browsers
-- Runs all tests
-- Generates HTML test report
-- Publishes report to GitHub Pages
+1. **GitHub Pages:** In the repository **Settings > Pages**, set **Source** to **GitHub Actions**.
 
-View the latest test report: [Test Report](https://your-username.github.io/genpact-assignment/)
+2. The workflow (`.github/workflows/dotnet.yml`) does:
+   - **Generate report:** Restore, build, install Playwright, run tests (Allure.NUnit writes to `allure-results/`), then run Allure CLI to produce the HTML report in `allure-report/`.
+   - **Upload artifact:** `actions/upload-pages-artifact` uploads `allure-report/` (with `index.html` at root).
+   - **Deploy:** `actions/deploy-pages` publishes to GitHub Pages.
 
-## Test Report
-
-HTML test reports are automatically generated and published to GitHub Pages after each CI run.
+3. After a successful run, the report is available at your GitHub Pages URL (e.g. `https://<username>.github.io/<repo>/`).
 
 ## Technologies Used
 
