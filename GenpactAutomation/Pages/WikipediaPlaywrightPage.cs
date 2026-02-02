@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Microsoft.Playwright;
 
 namespace GenpactAutomation.Pages;

@@ -44,10 +44,19 @@ public static class ConfigurationExtensions
 
     public static IServiceCollection AddConfiguration(this IServiceCollection services, IConfiguration config)
     {
+        // Register the shared Wikipedia base URL
+        services.Configure<WikipediaConfig>(config.GetSection("Wikipedia"));
+        
+        // Register config sections
         services.Configure<PageNavigatorConfig>(config.GetSection(nameof(PageNavigatorConfig)));
         services.Configure<MediaWikiApiConfig>(config.GetSection(nameof(MediaWikiApiConfig)));
         services.Configure<PlaywrightBrowserConfig>(config.GetSection(nameof(PlaywrightBrowserConfig)));
         services.Configure<PlaywrightBrowserContextConfig>(config.GetSection(nameof(PlaywrightBrowserContextConfig)));
+        
+        // Post-configure to inject base URL from WikipediaConfig
+        services.AddSingleton<IPostConfigureOptions<PageNavigatorConfig>, WikipediaOptionsPostConfigure>();
+        services.AddSingleton<IPostConfigureOptions<MediaWikiApiConfig>, WikipediaOptionsPostConfigure>();
+        
         return services;
     }
 

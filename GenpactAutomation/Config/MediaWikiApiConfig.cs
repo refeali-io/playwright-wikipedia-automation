@@ -3,7 +3,17 @@ namespace GenpactAutomation.Config;
 public class MediaWikiApiConfig
 {
     /// <summary>
-    /// Route API base URL (e.g. https://en.wikipedia.org/w/api.php). Set from WikipediaConfig in post-configure.
+    /// Base URL for Wikipedia - populated from WikipediaConfig
     /// </summary>
-    public string MediaWikiPhpRoute { get; set; } = string.Empty;
+    public string BaseUrl { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Route to the API endpoint (e.g. w/api.php)
+    /// </summary>
+    public string MediaWikiPhpRoute { get; set; } = "w/api.php";
+    
+    /// <summary>
+    /// Gets the full API URL by combining BaseUrl and route
+    /// </summary>
+    public string GetFullApiUrl() => $"{BaseUrl.TrimEnd('/')}/{MediaWikiPhpRoute.TrimStart('/')}";
 }

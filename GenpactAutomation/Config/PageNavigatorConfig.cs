@@ -3,8 +3,12 @@ namespace GenpactAutomation.Config;
 public class PageNavigatorConfig
 {
     /// <summary>
-    /// Full URL for PageNavigatorConfig
+    /// Base URL for Wikipedia - populated from WikipediaConfig
     /// </summary>
-    public string BaseUrl { get; set; } = "https://en.wikipedia.org/";
+    public string BaseUrl { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// Route to the Playwright page (e.g. wiki/Playwright_(software))
+    /// </summary>
     public string WikipediaPlaywrightPageRoute { get; set; } = string.Empty;
 }

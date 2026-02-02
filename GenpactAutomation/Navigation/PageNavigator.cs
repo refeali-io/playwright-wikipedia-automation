@@ -43,7 +43,9 @@ public class PageNavigator
 
     private async Task NavigateToPageAsync(string route)
     {
-        await _page.GotoAsync(route);
+        var baseUrl = _pageNavigatorConfig.BaseUrl.TrimEnd('/');
+        var fullUrl = $"{baseUrl}/{route.TrimStart('/')}";
+        await _page.GotoAsync(fullUrl);
     }
 
     private T ExtractPage<T>() where T : Page

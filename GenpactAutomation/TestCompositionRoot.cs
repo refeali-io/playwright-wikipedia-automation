@@ -20,9 +20,10 @@ public static class TestCompositionRoot
         services.AddHttpClient<Api.IMediaWikiApiClient, Api.MediaWikiApiClient>()
             .ConfigureHttpClient((sp, client) =>
             {
-                var baseUrl = sp.GetRequiredService<IOptions<Config.PageNavigatorConfig>>().Value.BaseUrl;
-                if (!string.IsNullOrEmpty(baseUrl))
-                    client.BaseAddress = new Uri(baseUrl);
+                var apiConfig = sp.GetRequiredService<IOptions<Config.MediaWikiApiConfig>>().Value;
+                var fullApiUrl = apiConfig.GetFullApiUrl();
+                if (!string.IsNullOrEmpty(fullApiUrl))
+                    client.BaseAddress = new Uri(fullApiUrl);
             });
         return services.BuildServiceProvider();
     }
