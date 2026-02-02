@@ -48,15 +48,16 @@ public class WikipediaPlaywrightTests : PlaywrightBaseTest
             string.Join("\n", nonLinkEntries.Select(e => $"  - {e.Text}")));
     }
 
-    // /// <summary>
-    // /// Task 3: Go to "Color (beta)" section (from the right), change to "Dark", validate that the color actually changed.
-    // /// </summary>
-    // [Test]
-    // public async Task Task3_ColorBeta_SetToDark_ThemeActuallyChanged()
-    // {
-    //     var wikiPage = await PageNavigator.NavigateToAsync<WikipediaPlaywrightPage>();
-    //     await wikiPage.SetColorThemeToDarkAsync();
-    //     var isDark = await wikiPage.IsDarkThemeActiveAsync();
-    //     Assert.That(isDark, Is.True, "Color theme should be Dark (skin-theme-clientpref-night) after selecting Dark.");
-    // }
+    /// <summary>
+    /// Task 3: Go to "Color (beta)" section, set theme to "Dark", assert the page applied dark theme.
+    /// </summary>
+    [Test]
+    public async Task Task3_ColorBeta_SetToDark_ThemeActuallyChanged()
+    {
+        var wikiPage = await PageNavigator.NavigateToAsync<WikipediaPlaywrightPage>();
+        await wikiPage.SetColorThemeAsync("dark");
+
+        var isDarkThemeApplied = await wikiPage.IsDarkThemeAppliedAsync();
+        Assert.That(isDarkThemeApplied, Is.True, "Page should be in dark mode (html has skin-theme-clientpref-night).");
+    }
 }

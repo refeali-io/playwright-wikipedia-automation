@@ -111,19 +111,37 @@ public class WikipediaPlaywrightPage : Page
     public record TechnologyEntry(string Text, bool IsLink);
 
     /// <summary>
-    /// Task 3: Opens the Color (beta) / Appearance section in the sidebar and selects "Dark".
+    /// Theme display names (user input) mapped to radio input value attributes.
     /// </summary>
-    public async Task SetColorThemeToDarkAsync()
+    private static readonly IReadOnlyDictionary<string, string> ThemeToValue = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
     {
-        await PlaywrightPage.Locator("#vector-appearance-dropdown, a[title='Appearance'], [data-event-name='ui.appearance']").First.ClickAsync();
+        ["dark"] = "night",
+        ["light"] = "day",
+        ["automatic"] = "os"
+    };
+
+    /// <summary>
+    /// Task 3: Selects the theme by name ("dark", "light", or "automatic") via the radio under #skin-client-prefs-skin-theme.
+    /// </summary>
+    public async Task SetColorThemeAsync(string themeName)
+    {
+        if (string.IsNullOrWhiteSpace(themeName) || !ThemeToValue.TryGetValue(themeName.Trim(), out var value))
+            throw new ArgumentException($"Theme must be one of: dark, light, automatic. Got: '{themeName}'", nameof(themeName));
+
+        // Open the theme menu so the radio is visible (it's in DOM but inside a collapsed panel)
+        await PlaywrightPage.Locator("#skin-client-prefs-skin-theme").ClickAsync();
         await PlaywrightPage.GetByText("Color (beta)", new() { Exact = false }).ClickAsync();
-        await PlaywrightPage.GetByRole(AriaRole.Option, new() { Name = "Dark" }).Or(PlaywrightPage.GetByText("Dark").First).ClickAsync();
+
+        // Find the radio by value (night=dark, day=light, os=automatic) and click
+        var radio = PlaywrightPage.Locator("#skin-client-prefs-skin-theme").Locator($"input[name='skin-client-pref-skin-theme-group'][value='{value}']");
+        await radio.ClickAsync();
     }
 
     /// <summary>
-    /// Task 3: Returns whether dark theme is currently active (html has skin-theme-clientpref-night).
+    /// Task 3: Returns whether Wikipedia has applied dark theme (html has class skin-theme-clientpref-night).
+    /// Use this to assert "we selected Dark and the page is in dark mode" regardless of OS preference.
     /// </summary>
-    public async Task<bool> IsDarkThemeActiveAsync()
+    public async Task<bool> IsDarkThemeAppliedAsync()
     {
         return await PlaywrightPage.EvaluateAsync<bool>(@"() => document.documentElement.classList.contains('skin-theme-clientpref-night')");
     }
