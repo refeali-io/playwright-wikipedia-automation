@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 namespace GenpactAutomation;
 
 /// <summary>
-/// Builds the DI container for tests (config + services). Replaces Startup + TestServer.
+/// Builds the DI container for tests (config + services). Replaces Startup + TestServer (Old mechanism).
 /// </summary>
 public static class TestCompositionRoot
 {
