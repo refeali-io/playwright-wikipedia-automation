@@ -29,11 +29,14 @@ public static class ConfigurationExtensions
         var playwrightBrowserConfig = config.GetSection(nameof(PlaywrightBrowserConfig)).Get<PlaywrightBrowserConfig>();
         var playwrightBrowserContextConfig = config.GetSection(nameof(PlaywrightBrowserContextConfig)).Get<PlaywrightBrowserContextConfig>();
 
+        // Maximized window: use actual window size instead of default viewport
+        playwrightBrowserContextConfig!.ViewportSize = ViewportSize.NoViewport;
+
         services.AddSingleton(_ => Playwright.CreateAsync().GetAwaiter().GetResult());
         services.AddSingleton(provider => provider.GetRequiredService<IPlaywright>()
             [playwrightBrowserConfig!.BrowserType].LaunchAsync(playwrightBrowserConfig).GetAwaiter().GetResult());
         services.AddSingleton(provider =>
-            provider.GetRequiredService<IBrowser>().NewContextAsync(playwrightBrowserContextConfig!).GetAwaiter()
+            provider.GetRequiredService<IBrowser>().NewContextAsync(playwrightBrowserContextConfig).GetAwaiter()
                 .GetResult());
         services.AddSingleton(provider =>
             provider.GetRequiredService<IBrowserContext>().NewPageAsync().GetAwaiter().GetResult());
