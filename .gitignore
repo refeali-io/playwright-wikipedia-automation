@@ -27,6 +27,8 @@ bld/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+*.sln.DotSettings
+*.user
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -40,6 +42,10 @@ ScaffoldingReadMe.txt
 ~$*
 *~
 CodeCoverage/
+.docx
+.txt
+.vscode
+.idea
 
 # MSBuild Binary and Structured Log
 *.binlog
@@ -52,3 +58,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Allure (default: GenpactAutomation/bin/Debug/net7.0/allure-results)
+allure-report/
