@@ -1,0 +1,136 @@
+
+┌──────────────────────────────────────────────────────────────┐
+│  MICROSOFT DEVELOPMENT TOOLS                               │
+│  Total: 126                                               │
+├──────────────────────────────────────────────────────────────┤
+│  Links:     126                                           │
+│  Not Links: 0                                             │
+├──────────────────────────────────────────────────────────────┤
+│  [LINK]     Visual Studio                                   │
+│  [LINK]     Code                                            │
+│  [LINK]     Express                                         │
+│  [LINK]     Team System Profiler                            │
+│  [LINK]     Tools for Applications                          │
+│  [LINK]     Tools for Office                                │
+│  [LINK]     Blend                                           │
+│  [LINK]     Expression Web                                  │
+│  [LINK]     FxCop                                           │
+│  [LINK]     GW-BASIC                                        │
+│  [LINK]     MACRO-80                                        │
+│  [LINK]     Macro Assembler                                 │
+│  [LINK]     MSBuild                                         │
+│  [LINK]     Pascal                                          │
+│  [LINK]     QuickBASIC                                      │
+│  [LINK]     QBasic                                          │
+│  [LINK]     QuickC                                          │
+│  [LINK]     Robotics Developer Studio                       │
+│  [LINK]     Roslyn                                          │
+│  [LINK]     SharePoint Designer                             │
+│  [LINK]     FrontPage                                       │
+│  [LINK]     Small Basic                                     │
+│  [LINK]     WebMatrix                                       │
+│  [LINK]     Windows App SDK                                 │
+│  [LINK]     Windows App Studio                              │
+│  [LINK]     Windows SDK                                     │
+│  [LINK]     CLR Profiler                                    │
+│  [LINK]     ILAsm                                           │
+│  [LINK]     Native Image Generator                          │
+│  [LINK]     WinDiff                                         │
+│  [LINK]     XAMLPad                                         │
+│  [LINK]     Dynamics AX                                     │
+│  [LINK]     BASIC                                           │
+│  [LINK]     legacy                                          │
+│  [LINK]     VB.NET                                          │
+│  [LINK]     VBA                                             │
+│  [LINK]     VBScript                                        │
+│  [LINK]     Bosque                                          │
+│  [LINK]     Visual C++                                      │
+│  [LINK]     C++/CX                                          │
+│  [LINK]     C++/CLI                                         │
+│  [LINK]     Managed C++                                     │
+│  [LINK]     C++/WinRT                                       │
+│  [LINK]     C#                                              │
+│  [LINK]     C/AL                                            │
+│  [LINK]     Dafny                                           │
+│  [LINK]     Dexterity                                       │
+│  [LINK]     F#                                              │
+│  [LINK]     F*                                              │
+│  [LINK]     Visual FoxPro                                   │
+│  [LINK]     Java                                            │
+│  [LINK]     J++                                             │
+│  [LINK]     J#                                              │
+│  [LINK]     JavaScript                                      │
+│  [LINK]     TypeScript                                      │
+│  [LINK]     JScript                                         │
+│  [LINK]     IronPython                                      │
+│  [LINK]     IronRuby                                        │
+│  [LINK]     Lean                                            │
+│  [LINK]     Power Fx                                        │
+│  [LINK]     PowerShell                                      │
+│  [LINK]     Project Verona                                  │
+│  [LINK]     Q#                                              │
+│  [LINK]     VPL                                             │
+│  [LINK]     XAML                                            │
+│  [LINK]     Windows API                                     │
+│  [LINK]     Silverlight                                     │
+│  [LINK]     XNA                                             │
+│  [LINK]     DirectX                                         │
+│  [LINK]     Managed DirectX                                 │
+│  [LINK]     UWP                                             │
+│  [LINK]     Xbox Development Kit                            │
+│  [LINK]     Windows Installer                               │
+│  [LINK]     WinUI                                           │
+│  [LINK]     .NET                                            │
+│  [LINK]     ASP.NET                                         │
+│  [LINK]     Core                                            │
+│  [LINK]     AJAX                                            │
+│  [LINK]     Dynamic Data                                    │
+│  [LINK]     MVC                                             │
+│  [LINK]     Razor                                           │
+│  [LINK]     Web Forms                                       │
+│  [LINK]     ADO.NET                                         │
+│  [LINK]     Entity Framework                                │
+│  [LINK]     MAUI                                            │
+│  [LINK]     CardSpace                                       │
+│  [LINK]     Communication Foundation                        │
+│  [LINK]     Identity Foundation                             │
+│  [LINK]     LINQ                                            │
+│  [LINK]     Presentation Foundation                         │
+│  [LINK]     Workflow Foundation                             │
+│  [LINK]     Device drivers                                  │
+│  [LINK]     WDK                                             │
+│  [LINK]     WDF                                             │
+│  [LINK]     KMDF                                            │
+│  [LINK]     UMDF                                            │
+│  [LINK]     Windows HLK                                     │
+│  [LINK]     WDM                                             │
+│  [LINK]     SQL Server                                      │
+│  [LINK]     Compact                                         │
+│  [LINK]     Management Studio                               │
+│  [LINK]     MSDE                                            │
+│  [LINK]     Analysis                                        │
+│  [LINK]     Reporting                                       │
+│  [LINK]     Integration                                     │
+│  [LINK]     Notification                                    │
+│  [LINK]     Microsoft Access                                │
+│  [LINK]     Access Database Engine                          │
+│  [LINK]     Extensible Storage Engine                       │
+│  [LINK]     Visual SourceSafe                               │
+│  [LINK]     Team Foundation Version Control                 │
+│  [LINK]     CodeView                                        │
+│  [LINK]     OneFuzz                                         │
+│  [LINK]     Playwright                                      │
+│  [LINK]     Script Debugger                                 │
+│  [LINK]     WinDbg                                          │
+│  [LINK]     xUnit.net                                       │
+│  [LINK]     Active Setup                                    │
+│  [LINK]     ClickOnce                                       │
+│  [LINK]     npm                                             │
+│  [LINK]     NuGet                                           │
+│  [LINK]     vcpkg                                           │
+│  [LINK]     Web Platform Installer                          │
+│  [LINK]     WiX                                             │
+│  [LINK]     Windows Package Manager                         │
+│  [LINK]     Microsoft Store                                 │
+└──────────────────────────────────────────────────────────────┘
+
