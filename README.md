@@ -166,14 +166,15 @@ The framework uses `appsettings.default.json` for configuration:
 
 ## CI/CD and Allure report
 
-1. **GitHub Pages:** In the repository **Settings > Pages**, set **Source** to **GitHub Actions**.
+1. **GitHub Pages:** In **Settings > Pages**, set **Source** to **Deploy from a branch**, branch **gh-pages** (the workflow publishes to this branch).
 
 2. The workflow (`.github/workflows/dotnet.yml`) does:
-   - **Generate report:** Restore, build, install Playwright, run tests (Allure.NUnit writes to `allure-results/`), then run Allure CLI to produce the HTML report in `allure-report/`.
-   - **Upload artifact:** `actions/upload-pages-artifact` uploads `allure-report/` (with `index.html` at root).
-   - **Deploy:** `actions/deploy-pages` publishes to GitHub Pages.
+   - **Job 1 – Run QA Tests:** Checkout, .NET 7, restore & build, install Playwright, run tests. Allure.NUnit writes to `GenpactAutomation/bin/Debug/net7.0/allure-results/`. That folder is uploaded as an artifact (`allure-results`), even when the job fails (`if: always()`).
+   - **Job 2 – Deploy Allure Report:** Runs `if: always()` after the test job. Downloads the `allure-results` artifact, installs Allure CLI (Allure 2 via wget), restores **history** from `gh-pages` (for report trends), generates the HTML report, deploys to **gh-pages** with `peaceiris/actions-gh-pages`, comments on the PR with the report URL, and adds the URL to the Actions summary.
 
-3. After a successful run, the report is available at your GitHub Pages URL (e.g. `https://<username>.github.io/<repo>/`).
+3. **Triggers:** Push and pull requests to `main` or `master` (ignoring changes to `README.md` only).
+
+4. After a run, the report is at **https://\<username\>.github.io/\<repo>/**. On pull requests, the workflow also posts a comment with that link.
 
 ## Technologies Used
 

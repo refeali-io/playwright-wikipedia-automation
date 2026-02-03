@@ -1,26 +1,23 @@
-# Genpact Automation: Run tests, generate Allure report, publish to GitHub Pages.
-# Repository Settings > Pages > Source: GitHub Actions (required).
+# Genpact Automation: Run Playwright tests, upload Allure results, deploy report to GitHub Pages.
+# For branch-based Pages: Settings > Pages > Source: Deploy from branch > gh-pages.
 
-name: Test and Publish Allure Report
+name: Playwright Full-Stack Tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main, master ]
+    paths-ignore:
+      - 'README.md'
   pull_request:
-    branches: [ "main", "core/build_all_infra" ]
+    branches: [ main, master ]
+    paths-ignore:
+      - 'README.md'
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 jobs:
-  test-and-report:
+  test:
+    name: Run QA Tests
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,39 +34,83 @@ jobs:
       - name: Install Playwright browsers
         run: pwsh GenpactAutomation/bin/Debug/net7.0/playwright.ps1 install --with-deps
 
-      - name: Run tests (generate Allure results)
+      - name: Run Playwright tests
         run: xvfb-run dotnet test --no-restore --no-build
-        # Allure.NUnit writes to allure-results/
+        # Allure.NUnit writes to GenpactAutomation/bin/Debug/net7.0/allure-results/
 
-      - name: Setup Java (for Allure CLI)
-        uses: actions/setup-java@v4
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: always()
         with:
-          distribution: temurin
-          java-version: 17
+          name: allure-results
+          path: GenpactAutomation/bin/Debug/net7.0/allure-results/
+          retention-days: 3
 
-      - name: Setup Node (for Allure commandline)
-        uses: actions/setup-node@v4
+  deploy-report:
+    name: Deploy Allure Report to Pages
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
         with:
-          node-version: 20
+          fetch-depth: 0
+
+      - name: Download Allure results
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-results
+          path: allure-results
 
       - name: Install Allure CLI
-        run: npm install -g allure-commandline
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y default-jre unzip wget
+          wget https://github.com/allure-framework/allure2/releases/download/2.35.1/allure-2.35.1.zip
+          unzip -q allure-2.35.1.zip -d /opt/allure
+          sudo ln -sf /opt/allure/allure-2.35.1/bin/allure /usr/bin/allure
 
-      - name: Generate Allure HTML report
-        run: allure generate GenpactAutomation/bin/Debug/net7.0/allure-results -o allure-report --clean
+      - name: Restore history from gh-pages
+        run: |
+          git fetch origin gh-pages 2>/dev/null || true
+          if git ls-tree -r origin/gh-pages --name-only 2>/dev/null | grep -q "^history/"; then
+            git checkout origin/gh-pages -- history 2>/dev/null || true
+            mkdir -p allure-results/history
+            cp -r history/* allure-results/history/ 2>/dev/null || true
+          fi
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: allure-report
+      - name: Generate Allure Report
+        run: allure generate allure-results --clean -o allure-report
 
-  deploy:
-    needs: test-and-report
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./allure-report
+          publish_branch: gh-pages
+
+      - name: Comment PR with Allure Report link
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const [owner, repo] = '${{ github.repository }}'.split('/');
+            const reportUrl = `https://${owner}.github.io/${repo}/`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: `**Allure Report is ready!**\n\n${reportUrl}`
+            });
+
+      - name: Add Action Summary
+        run: |
+          REPO="${{ github.repository }}"
+          OWNER="${REPO%%/*}"
+          NAME="${REPO#*/}"
+          echo "## Allure Report" >> $GITHUB_STEP_SUMMARY
+          echo "**https://${OWNER}.github.io/${NAME}/**" >> $GITHUB_STEP_SUMMARY
