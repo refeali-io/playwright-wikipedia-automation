@@ -1,4 +1,4 @@
-# Genpact Automation Framework
+# Playwright Wikipedia Automation
 
 A lightweight C# Playwright automation framework demonstrating UI and API testing capabilities against Wikipedia.
 
@@ -38,7 +38,7 @@ All tests target the Wikipedia page: [Playwright (software)](https://en.wikipedi
 ## Project Structure
 
 ```
-GenpactAutomation/
+PlaywrightWikipediaAutomation/
 ├── Api/                      # API clients
 │   ├── IMediaWikiApiClient.cs
 │   └── MediaWikiApiClient.cs
@@ -89,8 +89,8 @@ GenpactAutomation/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/genpact-assignment.git
-   cd genpact-assignment
+   git clone https://github.com/your-username/playwright-wikipedia-automation.git
+   cd playwright-wikipedia-automation
    ```
 
 2. Restore dependencies:
@@ -105,12 +105,12 @@ GenpactAutomation/
 
 4. Install Playwright browsers:
    ```bash
-   pwsh GenpactAutomation/bin/Debug/net7.0/playwright.ps1 install
+   pwsh PlaywrightWikipediaAutomation/bin/Debug/net7.0/playwright.ps1 install
    ```
 
 ### Running Tests
 
-Run all tests (Allure.NUnit writes results to `GenpactAutomation/bin/Debug/net7.0/allure-results/` by default):
+Run all tests (Allure.NUnit writes results to `PlaywrightWikipediaAutomation/bin/Debug/net7.0/allure-results/` by default):
 ```bash
 dotnet test
 ```
@@ -137,14 +137,14 @@ dotnet test --filter "Task1_DebuggingFeaturesSection_UniqueWordCount_UI_Equals_A
 3. **Run tests**, then generate and open the report:
    ```bash
    dotnet test
-   allure serve GenpactAutomation/bin/Debug/net7.0/allure-results
+   allure serve PlaywrightWikipediaAutomation/bin/Debug/net7.0/allure-results
    ```
    This generates the HTML report and opens it in your default browser.
 
    **Alternative:** generate to a folder and open `allure-report/index.html` in a browser:
    ```bash
    dotnet test
-   allure generate GenpactAutomation/bin/Debug/net7.0/allure-results -o allure-report --clean
+   allure generate PlaywrightWikipediaAutomation/bin/Debug/net7.0/allure-results -o allure-report --clean
    # Then open allure-report/index.html
    ```
 
@@ -169,7 +169,7 @@ The framework uses `appsettings.default.json` for configuration:
 1. **GitHub Pages:** In **Settings > Pages**, set **Source** to **Deploy from a branch**, branch **gh-pages** (the workflow publishes to this branch).
 
 2. The workflow (`.github/workflows/dotnet.yml`) does:
-   - **Job 1 – Run QA Tests:** Checkout, .NET 7, restore & build, install Playwright, run tests. Allure.NUnit writes to `GenpactAutomation/bin/Debug/net7.0/allure-results/`. That folder is uploaded as an artifact (`allure-results`), even when the job fails (`if: always()`).
+   - **Job 1 – Run QA Tests:** Checkout, .NET 7, restore & build, install Playwright, run tests. Allure.NUnit writes to `PlaywrightWikipediaAutomation/bin/Debug/net7.0/allure-results/`. That folder is uploaded as an artifact (`allure-results`), even when the job fails (`if: always()`).
    - **Job 2 – Deploy Allure Report:** Runs `if: always()` after the test job. Downloads the `allure-results` artifact, installs Allure CLI (Allure 2 via wget), restores **history** from `gh-pages` (for report trends), generates the HTML report, deploys to **gh-pages** with `peaceiris/actions-gh-pages`, comments on the PR with the report URL, and adds the URL to the Actions summary.
 
 3. **Triggers:** Push and pull requests to `main` or `master` (ignoring changes to `README.md` only).
@@ -187,10 +187,6 @@ The framework uses `appsettings.default.json` for configuration:
 | Microsoft.Extensions.Configuration | Configuration management |
 | MediaWiki API | Wikipedia content API |
 
-## Author
-
-Developed as part of the Genpact Automation QA Assessment.
-
 ## License
 
-This project is for assessment purposes only.
+MIT (or your preferred license).

@@ -1,4 +1,4 @@
-# Genpact Automation: Run Playwright tests, upload Allure results, deploy report to GitHub Pages.
+# Playwright Wikipedia Automation: Run Playwright tests, upload Allure results, deploy report to GitHub Pages.
 # For branch-based Pages: Settings > Pages > Source: Deploy from branch > gh-pages.
 
 name: Playwright Full-Stack Tests
@@ -32,18 +32,18 @@ jobs:
         run: dotnet restore && dotnet build --no-restore
 
       - name: Install Playwright browsers
-        run: pwsh GenpactAutomation/bin/Debug/net7.0/playwright.ps1 install --with-deps
+        run: pwsh PlaywrightWikipediaAutomation/bin/Debug/net7.0/playwright.ps1 install --with-deps
 
       - name: Run Playwright tests
         run: xvfb-run dotnet test --no-restore --no-build
-        # Allure.NUnit writes to GenpactAutomation/bin/Debug/net7.0/allure-results/
+        # Allure.NUnit writes to PlaywrightWikipediaAutomation/bin/Debug/net7.0/allure-results/
 
       - name: Upload Allure results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: allure-results
-          path: GenpactAutomation/bin/Debug/net7.0/allure-results/
+          path: PlaywrightWikipediaAutomation/bin/Debug/net7.0/allure-results/
           retention-days: 3
 
   deploy-report:
